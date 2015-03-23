@@ -366,9 +366,6 @@ private:
     bool m_allowGeolocation;
 };
 
-// [Qt] tst_QWebPage::infiniteLoopJS() timeouts with DFG JIT
-// https://bugs.webkit.org/show_bug.cgi?id=79040
-/*
 void tst_QWebPage::infiniteLoopJS()
 {
     JSTestPage* newPage = new JSTestPage(m_view);
@@ -377,7 +374,7 @@ void tst_QWebPage::infiniteLoopJS()
     m_view->page()->mainFrame()->evaluateJavaScript("var run = true;var a = 1;while(run){a++;}");
     delete newPage;
 }
-*/
+
 
 void tst_QWebPage::geolocationRequestJS()
 {

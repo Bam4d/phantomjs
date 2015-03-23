@@ -195,12 +195,31 @@ void QWebFrameAdapter::handleGestureEvent(QGestureEventFacade* gestureEvent)
 }
 #endif
 
+bool terminateCallback(JSContextRef ctx, void* context)
+{
+
+    QWebFrameAdapter* frameAdapter = static_cast<QWebFrameAdapter*>(context);
+    frameAdapter->evaluateJavaScript("console.log(\"callback terminated\");", "blah");
+    
+    return true;
+}
+
+void QWebFrameAdapter::setJSTimeout() {
+    ScriptController* scriptController = frame->script();
+    JSC::ExecState* exec = scriptController->globalObject(mainThreadNormalWorld())->globalExec();
+
+    JSContextGroupRef contextGroup = toRef(&exec->vm());
+
+    JSContextGroupSetExecutionTimeLimit(contextGroup, .1f, terminateCallback, this);
+}
+
 QVariant QWebFrameAdapter::evaluateJavaScript(const QString &scriptSource, const QString &location)
 {
     ScriptController* scriptController = frame->script();
     QVariant rc;
 
     if (scriptController) {
+        setJSTimeout();
         int distance = 0;
         ScriptValue value = scriptController->executeScript(ScriptSourceCode(scriptSource, String(location)));
         JSC::ExecState* exec = scriptController->globalObject(mainThreadNormalWorld())->globalExec();

@@ -35,16 +35,16 @@ void Watchdog::initTimer()
 {
 }
 
-void Watchdog::destroyTimer()
-{
-}
+// void Watchdog::destroyTimer()
+// {
+// }
 
-void Watchdog::startTimer(double)
-{
-}
+// void Watchdog::startTimer(double)
+// {
+// }
 
-void Watchdog::stopTimer()
-{
-}
+// void Watchdog::stopTimer()
+// {
+// }
 
 } // namespace JSC

@@ -27,8 +27,12 @@
 #define Watchdog_h
 
 #if PLATFORM(MAC) || PLATFORM(IOS)
-#include <dispatch/dispatch.h>    
+#include <dispatch/dispatch.h> 
+#else 
+#include <time.h>
 #endif
+
+
 
 namespace JSC {
 
@@ -59,6 +63,13 @@ public:
 
     void* timerDidFireAddress() { return &m_timerDidFire; }
 
+    // m_timerDidFire (above) indicates whether the timer fired. The Watchdog
+    // still needs to check if the allowed CPU time has elapsed. If so, then
+    // the Watchdog fires and m_didFire will be set.
+    // NOTE: m_timerDidFire is only set by the platform specific timer
+    // (probably from another thread) but is only cleared in the script thread.
+    bool m_timerDidFire;
+
 private:
     void arm();
     void disarm();
@@ -73,12 +84,7 @@ private:
     void startTimer(double limit);
     void stopTimer();
 
-    // m_timerDidFire (above) indicates whether the timer fired. The Watchdog
-    // still needs to check if the allowed CPU time has elapsed. If so, then
-    // the Watchdog fires and m_didFire will be set.
-    // NOTE: m_timerDidFire is only set by the platform specific timer
-    // (probably from another thread) but is only cleared in the script thread.
-    bool m_timerDidFire;
+    
     bool m_didFire;
 
     // All time units are in seconds.
@@ -96,6 +102,8 @@ private:
 #if PLATFORM(MAC) || PLATFORM(IOS)
     dispatch_queue_t m_queue;
     dispatch_source_t m_timer;
+#else
+    timer_t wdt; 
 #endif
 
     friend class Watchdog::Scope;

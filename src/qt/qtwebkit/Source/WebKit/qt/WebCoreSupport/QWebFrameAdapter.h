@@ -23,6 +23,7 @@
 #include "FrameLoaderClientQt.h"
 #include "PlatformEvent.h"
 #include "PlatformExportMacros.h"
+#include "JSContextRef.h"
 
 #if ENABLE(ORIENTATION_EVENTS) && HAVE(QTSENSORS)
 #include "qorientationsensor.h"
@@ -154,6 +155,9 @@ public:
     void handleGestureEvent(QGestureEventFacade*);
 #endif
     QWebFrameAdapter* createFrame(QWebFrameData*);
+
+    void setJSTimeout();
+    //JSShouldTerminateCallback terminateCallback(JSContextRef ctx, void* context);
 
     QVariant evaluateJavaScript(const QString& scriptSource, const QString& location);
     void addToJavaScriptWindowObject(const QString& name, QObject*, ValueOwnership);
