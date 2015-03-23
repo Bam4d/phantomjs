@@ -211,7 +211,7 @@ void Watchdog::startTimer(double limit)
     sevp.sigev_notify=SIGEV_THREAD;
     sevp.sigev_notify_attributes = NULL;
     sevp.sigev_signo=SIGRTMIN;
-    sevp.sigev_value.sival_ptr=wdt;
+    sevp.sigev_value.sival_ptr=this;
     sevp.sigev_notify_function=print_siginfo;
 
     if(timer_create(CLOCK_REALTIME, &sevp, &wdt) == -1) {
