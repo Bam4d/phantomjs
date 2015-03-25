@@ -28,7 +28,7 @@
 
 #if PLATFORM(MAC) || PLATFORM(IOS)
 #include <dispatch/dispatch.h> 
-#else 
+#elif !PLATFORM(WINDOWS)
 #include <time.h>
 #endif
 
@@ -102,7 +102,7 @@ private:
 #if PLATFORM(MAC) || PLATFORM(IOS)
     dispatch_queue_t m_queue;
     dispatch_source_t m_timer;
-#else
+#elif !PLATFORM(WINDOWS)
     timer_t wdt; 
 #endif
 

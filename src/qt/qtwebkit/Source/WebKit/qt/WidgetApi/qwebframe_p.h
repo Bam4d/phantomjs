@@ -57,6 +57,7 @@ public:
     virtual void didStartProvisionalLoad() OVERRIDE;
     virtual void didClearWindowObject() OVERRIDE;
     virtual bool handleProgressFinished(QPoint*) OVERRIDE;
+    virtual bool shouldInterruptJavaScript();
     virtual void emitInitialLayoutCompleted() OVERRIDE;
     virtual void emitIconChanged() OVERRIDE;
     virtual void emitLoadStarted(bool originatingLoad) OVERRIDE;

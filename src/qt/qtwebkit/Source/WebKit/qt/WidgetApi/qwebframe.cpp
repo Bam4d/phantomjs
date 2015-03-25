@@ -108,6 +108,11 @@ void QWebFramePrivate::emitLoadStarted(bool originatingLoad)
     emit q->loadStarted();
 }
 
+bool QWebFramePrivate::shouldInterruptJavaScript()
+{
+  return page->shouldInterruptJavaScript();
+}
+
 void QWebFramePrivate::emitLoadFinished(bool originatingLoad, bool ok)
 {
     if (page && originatingLoad)

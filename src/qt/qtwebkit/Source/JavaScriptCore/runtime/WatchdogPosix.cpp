@@ -26,25 +26,64 @@
 #include "config.h"
 #include "Watchdog.h"
 
+#include <time.h>
+#include <stdio.h>
+#include <signal.h>
+
+#include "CallFrame.h"
+
+
 namespace JSC {
 
-// This is a stub for platforms that have not implemented this functionality.
-// In this case, the platform timer here never fires.
+// This is run ever second from the watchdog poll
+void watchdogPoll(sigval_t sigval)
+{
+    Watchdog* watchdog = static_cast<Watchdog*>(sigval.sival_ptr);
+    watchdog->m_timerDidFire = true;
+}
 
+// This is a POSIX implementation of a watchdog timer
 void Watchdog::initTimer()
 {
 }
 
-void Watchdog::destroyTimer()
+void Watchdog::destroyTimer() 
 {
+	if(wdt != NULL) {
+	    timer_delete(wdt);
+	    wdt = NULL;
+	}
 }
 
-void Watchdog::startTimer(double)
+
+void Watchdog::startTimer(double limit) 
 {
+    struct sigevent sevp;
+    struct itimerspec its;
+
+    memset (&sevp, 0, sizeof (struct sigevent));
+    sevp.sigev_notify=SIGEV_THREAD;
+    sevp.sigev_notify_attributes = NULL;
+    sevp.sigev_signo=SIGRTMIN;
+    sevp.sigev_value.sival_ptr=this;
+    sevp.sigev_notify_function=watchdogPoll;
+
+    timer_create(CLOCK_REALTIME, &sevp, &wdt);
+
+    its.it_value.tv_sec = 1;
+    its.it_value.tv_nsec = 0;
+    its.it_interval.tv_sec = its.it_value.tv_sec;
+    its.it_interval.tv_nsec = its.it_value.tv_nsec;
+
+    timer_settime(wdt, 0, &its, NULL);
 }
 
 void Watchdog::stopTimer()
 {
+    if(wdt != NULL) {
+	    timer_delete(wdt);
+	    wdt = NULL;
+	}
 }
 
 } // namespace JSC

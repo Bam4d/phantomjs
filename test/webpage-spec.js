@@ -418,7 +418,8 @@ describe("WebPage object", function() {
         });
     });
 
-    xit("should interrupt a long-running JavaScript code", function() {
+    it("should interrupt a long-running JavaScript code", function() {
+        console.log("should interrupt");
         var page = new WebPage();
         var longRunningScriptCalled = false;
         var loadStatus;
@@ -427,14 +428,19 @@ describe("WebPage object", function() {
             page.stopJavaScript();
             longRunningScriptCalled = true;
         };
-        page.onError = function () {};
+        page.onError = function () {
+            console.log("error");
+        };
 
         runs(function() {
+            console.log("open");
             page.open('../test/webpage-spec-frames/forever.html',
-                      function(status) { loadStatus = status; });
+                      function(status) { loadStatus = status; console.log("done"); });
+            
         });
         waits(5000);
         runs(function() {
+            console.log("after");
             expect(loadStatus).toEqual('success');
             expect(longRunningScriptCalled).toBeTruthy();
         });

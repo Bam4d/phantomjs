@@ -143,6 +143,7 @@ public:
     virtual void didStartProvisionalLoad() = 0;
     virtual void didClearWindowObject() = 0;
     virtual bool handleProgressFinished(QPoint*) = 0;
+    virtual bool shouldInterruptJavaScript();
     virtual void emitInitialLayoutCompleted() = 0;
     virtual void emitIconChanged() = 0;
     virtual void emitLoadStarted(bool originatingLoad) = 0;
@@ -157,7 +158,6 @@ public:
     QWebFrameAdapter* createFrame(QWebFrameData*);
 
     void setJSTimeout();
-    //JSShouldTerminateCallback terminateCallback(JSContextRef ctx, void* context);
 
     QVariant evaluateJavaScript(const QString& scriptSource, const QString& location);
     void addToJavaScriptWindowObject(const QString& name, QObject*, ValueOwnership);

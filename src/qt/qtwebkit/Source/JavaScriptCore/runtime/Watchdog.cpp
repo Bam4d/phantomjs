@@ -182,52 +182,6 @@ void Watchdog::startCountdown(double limit)
     startTimer(limit);
 }
 
-void Watchdog::destroyTimer() 
-{
-    printf("destroying timer\n");
-    if(timer_delete(wdt) == -1) {
-        printf("Could not destroy timer\n");
-    }
-}
-
-void print_siginfo(sigval_t args)
-{
-    printf("timer called\n");
-
-    Watchdog* watchdog = static_cast<Watchdog*>(args.sival_ptr);
-
-    watchdog->m_timerDidFire = true;
-
-}
-
-void Watchdog::startTimer(double limit) 
-{
-    printf("started timer\n");
-
-    struct sigevent sevp;
-    struct itimerspec its;
-
-    memset (&sevp, 0, sizeof (struct sigevent));
-    sevp.sigev_notify=SIGEV_THREAD;
-    sevp.sigev_notify_attributes = NULL;
-    sevp.sigev_signo=SIGRTMIN;
-    sevp.sigev_value.sival_ptr=this;
-    sevp.sigev_notify_function=print_siginfo;
-
-    if(timer_create(CLOCK_REALTIME, &sevp, &wdt) == -1) {
-        printf("failed to create timer\n");
-    }
-
-    its.it_value.tv_sec = 1;
-    its.it_value.tv_nsec = 0;
-    its.it_interval.tv_sec = its.it_value.tv_sec;
-    its.it_interval.tv_nsec = its.it_value.tv_nsec;
-
-    if(timer_settime(wdt, 0, &its, NULL) == -1) {
-        printf("failed to start timer\n");
-    }
-}
-
 void Watchdog::stopCountdown()
 {
     if (m_isStopped)
@@ -235,13 +189,6 @@ void Watchdog::stopCountdown()
     stopTimer();
     m_isStopped = true;
     
-}
-
-void Watchdog::stopTimer()
-{
-    if(timer_delete(wdt) == -1) {
-        printf("Could not destroy timer\n");
-    }
 }
 
 Watchdog::Scope::Scope(Watchdog& watchdog)
@@ -253,6 +200,7 @@ Watchdog::Scope::Scope(Watchdog& watchdog)
 Watchdog::Scope::~Scope()
 {
     m_watchdog.disarm();
+    m_watchdog.destroyTimer();
 }
 
 } // namespace JSC

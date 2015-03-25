@@ -321,7 +321,6 @@ SOURCES += \
     runtime/StructureRareData.cpp \
     runtime/SymbolTable.cpp \
     runtime/Watchdog.cpp \
-    runtime/WatchdogNone.cpp \
     tools/CodeProfile.cpp \
     tools/CodeProfiling.cpp \
     yarr/YarrJIT.cpp \
@@ -336,6 +335,7 @@ linux-*:if(isEqual(QT_ARCH, "i386")|isEqual(QT_ARCH, "x86_64")) {
         disassembler/udis86/udis86_syn-att.c \
         disassembler/udis86/udis86_syn-intel.c \
         disassembler/udis86/udis86_syn.c \
+        runtime/WatchdogPosix.cpp \
 }
 
 win32:!mingw:isEqual(QT_ARCH, "x86_64"):{
@@ -349,6 +349,8 @@ win32:!mingw:isEqual(QT_ARCH, "x86_64"):{
     QMAKE_EXTRA_COMPILERS += asm_compiler
 
     ASM_SOURCES += jit/JITStubsMSVC64.asm
+    SOURCES += \
+        runtime/WatchdogNone.cpp \
 }
 
 build?(qttestsupport) {
